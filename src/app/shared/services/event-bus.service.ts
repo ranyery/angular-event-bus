@@ -1,23 +1,36 @@
-import { Injectable } from '@angular/core';
-import { filter, map, Observable, shareReplay, Subject } from 'rxjs';
+import { EventEmitter, Injectable } from '@angular/core';
+import { Subscription, filter, map, shareReplay } from 'rxjs';
 
 import { IEvent } from '../interfaces/event.interface';
 
 @Injectable({ providedIn: 'root' })
-export class EventBus<PayloadMap> {
-  private readonly _subject$ = new Subject<IEvent<PayloadMap>>();
+export class EventBusService<EventActionMap> {
+  readonly #eventEmitter$ = new EventEmitter<IEvent<EventActionMap>>();
 
   constructor() {}
 
-  public emit<K extends keyof PayloadMap>(key: K, data: PayloadMap[K]): void {
-    this._subject$.next({ key, data });
+  public emit<K extends keyof EventActionMap>(key: K): void;
+  public emit<K extends keyof EventActionMap>(
+    key: K,
+    data: EventActionMap[K]
+  ): void;
+  public emit<K extends keyof EventActionMap>(
+    key: K,
+    data?: EventActionMap[K]
+  ): void {
+    this.#eventEmitter$.emit({ key, data });
   }
 
-  public on<K extends keyof PayloadMap>(key: K): Observable<PayloadMap[K]> {
-    return this._subject$.pipe(
-      filter((e: IEvent<PayloadMap>) => e.key === key),
-      map((e: IEvent<PayloadMap>) => e.data as PayloadMap[K]),
-      shareReplay({ bufferSize: 1, refCount: true })
-    );
+  public on<K extends keyof EventActionMap>(
+    key: K,
+    callback: (data: EventActionMap[K]) => void
+  ): Subscription {
+    return this.#eventEmitter$
+      .pipe(
+        filter((event: IEvent<EventActionMap>) => event.key === key),
+        map((event: IEvent<EventActionMap>) => event.data as EventActionMap[K]),
+        shareReplay({ bufferSize: 1, refCount: true })
+      )
+      .subscribe(callback);
   }
 }

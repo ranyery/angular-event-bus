@@ -1,4 +1,4 @@
-export interface IEvent<PayloadMap> {
-  key: keyof PayloadMap;
-  data: PayloadMap[keyof PayloadMap];
+export interface IEvent<ActionMap> {
+  key: keyof ActionMap;
+  data?: ActionMap[keyof ActionMap];
 }

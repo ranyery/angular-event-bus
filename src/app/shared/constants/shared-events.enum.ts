@@ -4,8 +4,8 @@ export const enum ESharedEvents {
   RESET,
 }
 
-export type SharedEventPayloadMap = {
+export type SharedEventActionMap = {
   [ESharedEvents.ADD]: number;
   [ESharedEvents.SUBTRACT]: number;
-  [ESharedEvents.RESET]: undefined;
+  [ESharedEvents.RESET]?: null;
 };

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {
   ESharedEvents,
-  SharedEventPayloadMap,
+  SharedEventActionMap,
 } from 'src/app/shared/constants/shared-events.enum';
-import { EventBus } from 'src/app/shared/services/event-bus.service';
+import { EventBusService } from 'src/app/shared/services/event-bus.service';
 
 @Component({
   selector: 'app-home',
@@ -11,7 +11,7 @@ import { EventBus } from 'src/app/shared/services/event-bus.service';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  constructor(private _eventBus: EventBus<SharedEventPayloadMap>) {}
+  constructor(private _eventBus: EventBusService<SharedEventActionMap>) {}
 
   ngOnInit(): void {}
 
@@ -24,6 +24,6 @@ export class HomePage implements OnInit {
   }
 
   public reset(): void {
-    this._eventBus.emit(ESharedEvents.RESET, undefined);
+    this._eventBus.emit(ESharedEvents.RESET);
   }
 }
